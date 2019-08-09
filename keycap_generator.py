@@ -22,23 +22,44 @@ def generate_keycaps(json_path):
         return
 
     #extracts keycap data from parsed json file
+     for keyboard_row in keyboard_data:
+         width = 1.00
+         height = 1.00
+         index = 0
+         skip = False
+
+         for key in keyboard_row:
+             if skip == True:
+                 skip = False
+                 index += 1
+                 continue
+             if isinstance(key, str):
+                 if '\n' in key:
+                     key = key.splitlines()
+                 print(key, width, height)
+             if isinstance(key, dict):
+                 if '\n' in keyboard_row[index+1]:
+                     keyboard_row[index+1] = keyboard_row[index+1].splitlines()
+                 print(keyboard_row[index+1], extract_metadata(key))
+                 skip = True
+             index += 1
+
+
+def extract_metadata(metadata):
+    "extracts metadata from dict file"
+
+
     width = 1.00
     height = 1.00
-    for keyboard_rows in keyboard_data:
-        for key_data in keyboard_rows:
-            if isinstance(key_data, str):
-                if "\n" in key_data:
-                    key_data = key_data.splitlines()
-                print(key_data, width, height)
-            elif isinstance(key_data, dict):
-                try:
-                    width = key_data['w']
-                except KeyError:
-                    print("No new width found in metadata")
-                try:
-                    height = key_data['h']
-                except KeyError:
-                    print("No new height found in metadata")
+    try:
+        width = metadata['w']
+    except KeyError:
+        print('no new width metadata')
+    try:
+        height = metadata['h']
+    except KeyError:
+        print('no new height metadata')
+    return width, height
 
 
 def create_scad_keycap(width, height):
