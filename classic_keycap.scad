@@ -10,9 +10,9 @@ module create_keycap(height=10, stem_height=6, wall_thickness=3) {
     //cherrymx stem
     linear_extrude(height=stem_height)
         difference() {
-            circle(r=2.5, $fn=100, center=true);
-            square([1.32, 4.02], center=true);
-            square([4.02, 1.32], center=true);
+            circle(d=5.5, $fn=100, center=true);
+            square([1.34, 4.02], center=true);
+            square([4.02, 1.34], center=true);
         }
 }
 
