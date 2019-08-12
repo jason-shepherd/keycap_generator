@@ -21,28 +21,25 @@ def generate_keycaps(json_path):
         print("Invalid JSON file path")
         return
 
-    #extracts keycap data from parsed json file
-     for keyboard_row in keyboard_data:
-         width = 1.00
-         height = 1.00
-         index = 0
-         skip = False
+    #extracts useful key data
+    for keyboard_row in keyboard_data:
+        width = 1.00
+        height = 1.00
+        skip = False
 
-         for key in keyboard_row:
-             if skip == True:
-                 skip = False
-                 index += 1
-                 continue
-             if isinstance(key, str):
-                 if '\n' in key:
-                     key = key.splitlines()
-                 print(key, width, height)
-             if isinstance(key, dict):
-                 if '\n' in keyboard_row[index+1]:
-                     keyboard_row[index+1] = keyboard_row[index+1].splitlines()
-                 print(keyboard_row[index+1], extract_metadata(key))
-                 skip = True
-             index += 1
+        for i in range(0, len(keyboard_row)):
+            if skip == True:
+                skip = False
+                continue
+            if isinstance(keyboard_row[i], str):
+                if '\n' in keyboard_row[i]:
+                    keyboard_row[i] = keyboard_row[i].splitlines()
+                print(keyboard_row[i], width, height)
+            if isinstance(keyboard_row[i], dict):
+                if '\n' in keyboard_row[i+1]:
+                    keyboard_row[i+1] = keyboard_row[i+1].splitlines()
+                print(keyboard_row[i+1], extract_metadata(keyboard_row[i]))
+                skip = True
 
 
 def extract_metadata(metadata):
