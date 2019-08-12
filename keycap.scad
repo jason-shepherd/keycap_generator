@@ -2,10 +2,12 @@ module create_keycap(height=10, stem_height=6, wall_thickness=3) {
     //keycap shell
     difference() {
         cube([18, 18, height], center = true);
+        translate([0, 0, -wall_thickness/2])
         cube([18-wall_thickness, 18-wall_thickness, height-wall_thickness], center = true);
     }
     
     //cherrymx stem
+    translate([0, 0, -height/2])
     linear_extrude(height=stem_height)
         difference() {
             circle(d=5.5, $fn=100, center=true);
