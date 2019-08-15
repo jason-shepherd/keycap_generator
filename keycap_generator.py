@@ -68,14 +68,14 @@ def create_scad_keycap(legends, width=1, height=1, scad_path=r'keycap.scad', out
         scad_keycap = scad_file.read()
         scad_file.close()
 
-    scad_keycap += "difference() {\n    create_keycap(u_width=" + str(width) + ", u_height=" + str(height) + ");\n  create_legends(["
+    scad_keycap += "\ncreate_keycap(u_width=" + str(width) + ", u_height=" + str(height) + ", legends=["
     if(isinstance(legends, list)):
         for item in legends:
             scad_keycap += r'"' + item + r'",'
     else:
         scad_keycap += r'"' + legends + r'"'
 
-    scad_keycap += "]);\n}"
+    scad_keycap += "]);"
     with open(output_path, 'w', encoding='utf-8') as output_file:
         output_file.write(scad_keycap)
         output_file.close()
