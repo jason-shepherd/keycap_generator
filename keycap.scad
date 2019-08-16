@@ -1,13 +1,31 @@
-module create_keycap(key_width=18, height=10, stem_height=6, wall_thickness=3, u_width=1, u_height=1, legends=["W"]) {
-    //keycap shell
+module create_keycap(bottom=18, top=12.6, height=10, u_width=1, u_height=1, legends=["W"]) {
     difference() {
-        cube([key_width*u_width, key_width*u_height, height], center = true);
-        translate([0, 0, -wall_thickness/2])
-        cube([key_width*u_width-wall_thickness, key_width*u_height-wall_thickness, height-wall_thickness], center = true);
-        create_legends(legends=legends, u_width=u_width, u_height=u_height, key_width=key_width);
+        hull() {
+            cube([bottom*u_width, bottom*u_height, 0.0001],  center=true);
+            translate([0, 0, height])
+                cube([bottom*u_width-(bottom-top), bottom*u_height-(bottom-top), 0.0001], center=true);
+        }
+        hull() {
+            cube([bottom*u_width-3, bottom*u_height-3, 0.0001],  center=true);
+            translate([0, 0, height-3])
+                cube([bottom*u_width-(bottom-top)-3, bottom*u_height-(bottom-top)-3, 0.0001], center=true);
+        }
     }
     
-    //cherrymx stem
+    create_stem();
+    if(u_width >= 2)
+        translate([bottom*floor(u_width)/2-bottom/2, 0, 0])
+        create_stem();
+        translate([-(bottom*floor(u_width)/2-bottom/2), 0, 0])
+        create_stem();
+    if(u_height >= 2)
+        translate([0, bottom*floor(u_height)/2-bottom/2, 0])
+        create_stem();
+        translate([0, -(bottom*floor(u_height)/2-bottom/2), 0])
+        create_stem();
+}
+
+module create_stem(stem_height=6) {
     translate([0, 0, -height/2])
     linear_extrude(height=stem_height)
         difference() {
@@ -33,5 +51,5 @@ module create_legends(legends=["w", "a", "s", "d"], key_width=18, key_height=10,
     }
 }
 
-//create_keycap(legends=["W", "A", "S", "D"]);
+create_keycap(u_width=2.25);
 //create_legends(u_width=2);
