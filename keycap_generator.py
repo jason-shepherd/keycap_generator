@@ -9,12 +9,13 @@ import json
 class KeycapGenerator:
     """Generates keycap"""
 
-    def __init__(self, json_path='keyboard-layout.json',
+    def __init__(self, json_path='keyboard-layout.json', keycap_path='keycap.scad',
                  openscad_path='C:\\Program Files\\OpenSCAD\\openscad'):
         """init keycap generator"""
 
         self.json_path = json_path
         self.openscad_path = openscad_path
+        self.keycap_path = keycap_path
 
     def generate_keycaps(self):
         """generates keycap stl files from KLE RAW data"""
@@ -43,18 +44,18 @@ class KeycapGenerator:
                         key = key.splitlines()
                     print(key, default_width, default_height)
                     self.create_scad_keycap(legends=raw(key), width=default_width,
-                                            height=default_height, output_path='{ir} {i} key.scad')
-                    self.scad_to_stl('{ir} {i} key.scad''{ir} {i} key.scad'.format(),
-                                     '{ir} {i} key.stl'.format())
+                                            height=default_height, output_path='{} {} key.scad'.format(ir, i))
+                    self.scad_to_stl('{} {} key.scad'.format(ir, i),
+                                     '{} {} key.stl'.format(ir, i))
                 elif isinstance(key, dict):
                     if '\n' in keyboard_row[i+1]:
                         keyboard_row[i+1] = keyboard_row[i+1].splitlines()
                     tmp_width, tmp_height = self.extract_metadata(key)
                     print(keyboard_row[i+1], tmp_width, tmp_height)
                     self.create_scad_keycap(legends=raw(keyboard_row[i+1]), width=tmp_width,
-                                            height=tmp_height, output_path='{ir} {i} key.scad')
-                    self.scad_to_stl('{ir} {i} key.scad'.format(),
-                                     '{ir} {i} key.stl'.format())
+                                            height=tmp_height, output_path='{} {} key.scad'.format(ir, i))
+                    self.scad_to_stl('{} {} key.scad'.format(ir, i),
+                                     '{} {} key.stl'.format(ir, i))
                     skip = True
 
     def extract_metadata(self, metadata):
@@ -62,16 +63,15 @@ class KeycapGenerator:
 
         return metadata.get('w', 1.00), metadata.get('h', 1.00)
 
-    def create_scad_keycap(self, legends, width=1, height=1,
-                           scad_path=r'keycap.scad', output_path=r'keycap_out.scad'):
+    def create_scad_keycap(self, legends, width=1, height=1, output_path=r'keycap_out.scad'):
         """Creates a keycap scad object from width and height"""
 
-        with open(scad_path, 'r', encoding='utf-8') as scad_file:
+        with open(self.keycap_path, 'r', encoding='utf-8') as scad_file:
             scad_keycap = scad_file.read()
             scad_file.close()
 
-        scad_keycap += "\ncreate_keycap(u_width={width}, u_height={height}, legends=[".format(
-        )
+        scad_keycap += "\ncreate_keycap(u_width={}, u_height={}, legends=[".format(width, height)
+
         if isinstance(legends, list):
             for item in legends:
                 scad_keycap += r'"' + item + r'",'
