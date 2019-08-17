@@ -11,7 +11,7 @@ module create_keycap(bottom=18, top=12.6, key_height=10, u_width=1, u_height=1, 
                 translate([0, 0, 6])
                     cube([bottom*u_width-(bottom-top)-3, bottom*u_height-(bottom-top)-3, 0.0001], center=true);
             }
-            create_legends(legends=legends, u_width=u_width, u_height=u_height, key_width=top);
+            create_legends(legends=legends, u_width=u_width, u_height=u_height, top=top, bottom=bottom);
         }
         //create_legends(legends);
         create_stem(stem_height=10);
@@ -34,7 +34,7 @@ module create_stem(stem_height=10) {
     translate([0, 0, 0])
     linear_extrude(height=stem_height)
         difference() {
-            circle(d=5.5, $fn=100, center=true);
+            circle(d=5.5, $fn=100);
             square([1.35, 4.02], center=true);
             square([4.02, 1.35], center=true);
         }
