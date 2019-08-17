@@ -9,7 +9,7 @@ class KeycapGenerator:
     """Generates keycap"""
 
 
-    def __init__(self, json_path=r'keyboard-layout.json', openscad_path=r'C:\Program Files\OpenSCAD\openscad'):
+    def __init__(self, json_path='keyboard-layout.json', openscad_path='C:\\Program Files\\OpenSCAD\\openscad'):
         """init keycap generator"""
 
 
@@ -44,15 +44,15 @@ class KeycapGenerator:
                     if '\n' in key:
                         key = key.splitlines()
                     print(key, default_width, default_height)
-                    self.create_scad_keycap(legends=raw(key), width=default_width, height=default_height, output_path=str(ir) + " " + str(i) + r' key.scad')
-                    self.scad_to_stl(str(ir) + " " + str(i) + r' key.scad', str(ir) + " " + str(i) + r' key.stl')
+                    self.create_scad_keycap(legends=raw(key), width=default_width, height=default_height, output_path=str(ir) + " " + str(i) + ' key.scad')
+                    self.scad_to_stl(str(ir) + " " + str(i) + ' key.scad', str(ir) + " " + str(i) + ' key.stl')
                 elif isinstance(key, dict):
                     if '\n' in keyboard_row[i+1]:
                         keyboard_row[i+1] = keyboard_row[i+1].splitlines()
                     tmp_width, tmp_height = self.extract_metadata(key)
                     print(keyboard_row[i+1], tmp_width, tmp_height)
-                    self.create_scad_keycap(legends=raw(keyboard_row[i+1]), width=tmp_width, height=tmp_height, output_path=str(ir) + " " + str(i) + r' key.scad')
-                    self.scad_to_stl(str(ir) + " " + str(i) + r' key.scad', str(ir) + " " + str(i) + r' key.stl')
+                    self.create_scad_keycap(legends=raw(keyboard_row[i+1]), width=tmp_width, height=tmp_height, output_path=str(ir) + " " + str(i) + ' key.scad')
+                    self.scad_to_stl(str(ir) + " " + str(i) + ' key.scad', str(ir) + " " + str(i) + ' key.stl')
                     skip = True
     
     
@@ -60,17 +60,7 @@ class KeycapGenerator:
         "extracts metadata from dict file"
     
     
-        width = 1.00
-        height = 1.00
-        try:
-            width = metadata['w']
-        except KeyError:
-            print('no new width metadata')
-        try:
-            height = metadata['h']
-        except KeyError:
-            print('no new height metadata')
-        return width, height
+        return metadata.get('w', 1.00), metadata.get('h', 1.00) 
     
     
     def create_scad_keycap(self, legends, width=1, height=1, scad_path=r'keycap.scad', output_path=r'keycap_out.scad'):

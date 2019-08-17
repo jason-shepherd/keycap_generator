@@ -11,7 +11,7 @@ module create_keycap(bottom=18, top=12.6, key_height=10, u_width=1, u_height=1, 
                 translate([0, 0, 6])
                     cube([bottom*u_width-(bottom-top)-3, bottom*u_height-(bottom-top)-3, 0.0001], center=true);
             }
-            create_legends(legends=legends);
+            create_legends(legends=legends, u_width=u_width, u_height=u_height, key_width=top);
         }
         //create_legends(legends);
         create_stem(stem_height=10);
@@ -40,10 +40,10 @@ module create_stem(stem_height=10) {
         }
 }
 
-module create_legends(legends=["w", "a", "s", "d"], key_width=18, key_height=10, u_width=1, u_height=1) {
+module create_legends(legends=["w"], bottom=18, top=12.6, key_height=10, u_width=1, u_height=1) {
     for(i=[0:len(legends)-1]) {
-        xpos = key_width/2 * u_width - 1.5;
-        ypos = (key_width-5.4)/2 * u_height - 3.5;
+        xpos = (bottom*u_width-(bottom-top))/2 - 1.5;
+        ypos = (bottom*u_height-(bottom-top))/2 - 3.5;
         if(i < 2) {
             translate([-xpos, ypos + (-ypos * 2 * i), key_height-1])
             linear_extrude(height=1)
@@ -57,6 +57,6 @@ module create_legends(legends=["w", "a", "s", "d"], key_width=18, key_height=10,
 }
 
 //rotate([0, 180, 0])
-//create_keycap(u_width=2);
+//create_keycap(u_width=1, legends=["w", "a", "s", "d"]);
 //create_stem();
 //create_legends(u_width=2);
