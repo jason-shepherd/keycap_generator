@@ -31,32 +31,18 @@ class KeycapGenerator:
 
         # extracts useful key data
         for ir, keyboard_row in enumerate(keyboard_data):
-            default_width = 1.00
-            default_height = 1.00
-            skip = False
-
+            keyboard_row = iter(keyboard_row)
             for i, key in enumerate(keyboard_row):
-                if skip:
-                    skip = False
-                    continue
-                elif isinstance(key, str):
-                    if '\n' in key:
-                        key = key.splitlines()
-                    print(key, default_width, default_height)
-                    self.create_scad_keycap(legends=raw(key), width=default_width,
-                                            height=default_height, output_path='{} {} key.scad'.format(ir, i))
-                    self.scad_to_stl('{} {} key.scad'.format(ir, i),
-                                     '{} {} key.stl'.format(ir, i))
-                elif isinstance(key, dict):
-                    if '\n' in keyboard_row[i+1]:
-                        keyboard_row[i+1] = keyboard_row[i+1].splitlines()
-                    tmp_width, tmp_height = self.extract_metadata(key)
-                    print(keyboard_row[i+1], tmp_width, tmp_height)
-                    self.create_scad_keycap(legends=raw(keyboard_row[i+1]), width=tmp_width,
-                                            height=tmp_height, output_path='{} {} key.scad'.format(ir, i))
-                    self.scad_to_stl('{} {} key.scad'.format(ir, i),
-                                     '{} {} key.stl'.format(ir, i))
-                    skip = True
+                width = 1.00
+                height = 1.00
+                legends = key
+
+                if isinstance(key, dict):
+                    width, height = self.extract_metadata(key)
+                    legends = next(keyboard_row)
+                if '\n' in legends:
+                    legends = legends.splitlines()
+                print(legends, width, height)
 
     def extract_metadata(self, metadata):
         "extracts metadata from dict file"
