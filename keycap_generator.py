@@ -16,6 +16,8 @@ class KeycapGenerator:
         self.json_path = json_path
         self.openscad_path = openscad_path
         self.keycap_path = keycap_path
+        self.scad_keycap = None
+        self.scad_file = None
 
     def generate_keycaps(self):
         """generates keycap stl files from KLE RAW data"""
@@ -28,6 +30,15 @@ class KeycapGenerator:
         except FileNotFoundError:
             print("Invalid JSON file path")
             return
+
+        #open scad template file
+        try:
+            self.scad_file = open(self.keycap_path, 'r+', encoding='utf-8')
+            self.scad_keycap = self.scad_file.read()
+        except FileNotFoundError:
+            print("Invalid SCAD file path")
+            return
+        #print(self.scad_keycap)
 
         # extracts useful key data
         for ir, keyboard_row in enumerate(keyboard_data):
@@ -43,31 +54,34 @@ class KeycapGenerator:
                 if '\n' in legends:
                     legends = legends.splitlines()
                 print(legends, width, height)
+                self.create_scad_keycap(legends, width, height)
+                self.scad_to_stl(self.keycap_path, "{} {} keycap.stl".format(ir, i))
+        self.scad_file.truncate(0)
+        self.scad_file.seek(0)
+        self.scad_file.write(self.scad_keycap)
+        self.scad_file.close()
 
     def extract_metadata(self, metadata):
         "extracts metadata from dict file"
 
         return metadata.get('w', 1.00), metadata.get('h', 1.00)
 
-    def create_scad_keycap(self, legends, width=1, height=1, output_path=r'keycap_out.scad'):
+    def create_scad_keycap(self, legends, width=1, height=1):
         """Creates a keycap scad object from width and height"""
 
-        with open(self.keycap_path, 'r', encoding='utf-8') as scad_file:
-            scad_keycap = scad_file.read()
-            scad_file.close()
-
-        scad_keycap += "\ncreate_keycap(u_width={}, u_height={}, legends=[".format(width, height)
+        keycap_call = "\ncreate_keycap(u_width={}, u_height={}, legends=[".format(width, height)
 
         if isinstance(legends, list):
             for item in legends:
-                scad_keycap += r'"' + item + r'",'
+                keycap_call += r'"' + item + r'",'
         else:
-            scad_keycap += r'"' + legends + r'"'
+            keycap_call += r'"' + legends + r'"'
 
-        scad_keycap += "]);"
-        with open(output_path, 'w', encoding='utf-8') as output_file:
-            output_file.write(scad_keycap)
-            output_file.close()
+        keycap_call += "]);"
+        self.scad_file.truncate(0)
+        self.scad_file.seek(0)
+        self.scad_file.write(self.scad_keycap + keycap_call)
+        self.scad_file.flush()
 
     def scad_to_stl(self, scad_path, output_path):
         """Use openscad command line to create stl file from scad file"""
