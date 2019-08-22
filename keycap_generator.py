@@ -4,6 +4,9 @@
 import subprocess
 # used for json parsing
 import json
+# for command line arg parsing 
+import argparse
+# pip install argparse to use
 
 
 class KeycapGenerator:
@@ -126,5 +129,11 @@ def raw(text):
 
 
 if __name__ == '__main__':
-    generator = KeycapGenerator()
+    parser = argparse.ArgumentParser(description = 'Generate your custom keycaps. REQUIRES OPENSCAD INSTALL!!')
+    parser.add_argument('-j', '--json_path', default = 'keyboard-layout.json', type = str, dest = 'json_path', help = 'Path to KLE RAW json data')
+    parser.add_argument('-k', '--keycap_path', default = 'keycap.scad', type = str, dest = 'keycap_path', help = 'Path to keycap scad file')
+    parser.add_argument('-s', '--openscad_path', type = str, dest = 'openscad_path', help = 'Path to openscad executable install', required = True)
+    args = parser.parse_args()
+
+    generator = KeycapGenerator(args.json_path, args.keycap_path, args.openscad_path)
     generator.generate_keycaps()
