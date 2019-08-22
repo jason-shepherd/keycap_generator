@@ -63,10 +63,3 @@ module create_legends(legends=["w"], bottom=18, top=12.6, key_height=10, u_width
 //create_keycap(u_width=1, legends=["w", "a", "s", "d"]);
 //create_stem();
 //create_legends(u_width=2);
-
-create_keycap(u_width=1.0, u_height=1.0, legends=["Esc"]);
-create_keycap(u_width=1.0, u_height=1.0, legends=["F2"]);
-create_keycap(u_width=1.0, u_height=1.0, legends=["Delete"]);
-create_keycap(u_width=1.0, u_height=1.0, legends=["F1"]);
-create_keycap(u_width=1.0, u_height=1.0, legends=["Esc"]);
-create_keycap(u_width=1.0, u_height=1.0, legends=["Delete"]);
