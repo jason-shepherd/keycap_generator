@@ -47,19 +47,64 @@ module create_legends(legends=["w"], bottom=18, top=12.6, key_height=10, u_width
     for(i=[0:len(legends)-1]) {
         xpos = (bottom*u_width-(bottom-top))/2 - 1.5;
         ypos = (bottom*u_height-(bottom-top))/2 - 3.5;
+        string = len(legends[i])*4 > bottom*u_width-(bottom-top) ? split_string(legends[i]) : legends[i];
         if(i < 2) {
             translate([-xpos, ypos + (-ypos * 2 * i), key_height-1+.0001])
             linear_extrude(height=1)
-                text(legends[i], size=4, halign="left", valign="center");
+                better_text(string, size=2, halign="left", valign="center");
         } else if(i < 4) {
             translate([xpos, ypos + (-ypos* 2 * (i-2)), key_height-1+.0001])
             linear_extrude(height=1)
-            text(legends[i], size=4, halign="right", valign="center");
+                better_text(string, size=4, halign="right", valign="center");
         }
     }
 }
 
+function string_array(string, split_char, skip=0, i=0) = (
+    skip < 0 ?
+        ""
+    :i == len(string) - 1 ?
+        string[i]
+    :string[i] == split_char ?
+        string_array(string, split_char, skip-1, i+1)
+    :
+        str(skip == 0 ? string[i] : "", string_array(string, split_char, skip, i+1))
+            
+);
+
+function split_chars_amount(string, split_char, split_chars=0, i=0) = (
+    i == len(string) - 1 ? 
+        split_chars
+    :
+        split_chars_amount(string, split_char, string[i] == split_char ? split_chars+1 : split_chars, i+1)
+);
+
+function split(string, split_char="\n", i=0) = (
+    i == split_chars_amount(string, split_char) ?
+        string_array(string, split_char, i)
+    :
+        concat(string_array(string, split_char, i), split(string, split_char, i+1))
+);
+
+module better_text(string, size=10, font="MS Sans Serif", halign="left", valign="baseline", character_spacing=1, direction="ltr", language="en", script="latin", line_spacing=125, $fn=50) {
+    lines = split(string);
+    for(i=[0:len(lines)-1]) {
+        translate([0, -line_spacing*size/100*i, 0])
+        text(lines[i], size=size, font=font, halign=halign, valign=valign, spacing=character_spacing, direction=direction, language=language, script=script, $fn=$fn);
+    }
+}
+
+function split_string(string, split_char, i=0) = (
+    i == len(string)-1 ?
+        string[i] == split_char ?
+            "\n"
+            :
+            string[i]
+        :
+        str(string[i] == split_char ? "\n" : string[i],        split_string(string, split_char, i+1))
+);
+
 //rotate([0, 180, 0])
-//create_keycap(u_width=1, legends=["w", "a", "s", "d"]);
+create_keycap(u_width=1, legends=["Num\nLock"]);
 //create_stem();
 //create_legends(u_width=2);
