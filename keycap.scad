@@ -103,8 +103,3 @@ function split_string(string, split_char, i=0) = (
         :
         str(string[i] == split_char ? "\n" : string[i],        split_string(string, split_char, i+1))
 );
-
-//rotate([0, 180, 0])
-create_keycap(u_width=1, legends=["Num\nLock"]);
-//create_stem();
-//create_legends(u_width=2);
