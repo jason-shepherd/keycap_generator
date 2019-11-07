@@ -81,7 +81,10 @@ function split_chars_amount(string, split_char, split_chars=0, i=0) = (
 
 function split(string, split_char="\n", i=0) = (
     i == split_chars_amount(string, split_char) ?
-        string_array(string, split_char, i)
+        split_chars_amount(string, split_char) == 0 ?
+            concat(string)
+        :
+            string_array(string, split_char, i)
     :
         concat(string_array(string, split_char, i), split(string, split_char, i+1))
 );
@@ -96,10 +99,8 @@ module better_text(string, size=10, font="MS Sans Serif", halign="left", valign=
 
 function split_string(string, split_char, i=0) = (
     i == len(string)-1 ?
-        string[i] == split_char ?
-            "\n"
-            :
-            string[i]
+        string[i]
         :
-        str(string[i] == split_char ? "\n" : string[i],        split_string(string, split_char, i+1))
+        str(string[i] == split_char ? "\n" : string[i], split_string(string, split_char, i+1))
 );
+create_keycap(u_width=1.0, u_height=1.0, legends=["#","3",]);
