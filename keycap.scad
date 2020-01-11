@@ -73,7 +73,7 @@ function string_array(string, split_char, skip=0, i=0) = (
 );
 
 function split_chars_amount(string, split_char, split_chars=0, i=0) = (
-    i == len(string) - 1 ? 
+    i == len(string) - 1  || len(string) == 0 ? 
         split_chars
     :
         split_chars_amount(string, split_char, string[i] == split_char ? split_chars+1 : split_chars, i+1)
@@ -103,4 +103,7 @@ function split_string(string, split_char, i=0) = (
         :
         str(string[i] == split_char ? "\n" : string[i], split_string(string, split_char, i+1))
 );
-create_keycap(u_width=1.0, u_height=1.0, legends=["#","3",]);
+
+
+
+create_keycap(u_width=1.0, u_height=1.0, legends=["^","6",]);
