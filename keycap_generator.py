@@ -20,7 +20,6 @@ class KeycapGenerator:
         self.openscad_path = openscad_path
         self.keycap_path = keycap_path
         self.scad_keycap = None
-        # TODO try to make stl from string
         self.scad_file = None
 
     def generate_keycaps(self):
@@ -44,6 +43,7 @@ class KeycapGenerator:
             return
 
         # extracts useful key data
+        font_size = 3
         for ir, keyboard_row in enumerate(keyboard_data):
             keyboard_row = iter(keyboard_row)
             for i, key in enumerate(keyboard_row):
@@ -56,13 +56,15 @@ class KeycapGenerator:
                     width = key.get('w', 1)
                     height = key.get('h', 1)
                     homing = key.get('n', 1)
+                    font_size = key.get('f', font_size)
                     legends = next(keyboard_row)
 
                 if '\n' in legends:
                     legends = legends.splitlines()
 
                 print(legends, width, height)
-                self.create_scad_keycap(raw(legends), width, height, homing)
+                self.create_scad_keycap(raw(legends), width, height, homing,
+                                        font_size)
                 self.scad_to_stl(self.keycap_path, "{} {} keycap.stl".format(ir, i))
 
         #rewrite original file data
@@ -71,11 +73,12 @@ class KeycapGenerator:
         self.scad_file.write(self.scad_keycap)
         self.scad_file.close()
 
-    def create_scad_keycap(self, legends, width, height, homing):
+    def create_scad_keycap(self, legends, width, height, homing, font_size):
         """Creates a keycap scad object from width and height"""
 
         keycap_call = """create_keycap(u_width={}, u_height={}, homing={},
-                       legends=[""".format(width, height, str(homing).lower())
+                       font_size={}, legends=[""".format(width, height,
+                               str(homing).lower(), font_size)
 
         if isinstance(legends, list):
             for item in legends:

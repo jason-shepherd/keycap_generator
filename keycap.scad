@@ -1,4 +1,4 @@
-module create_keycap(bottom=18, top=12.6, key_height=10, u_width=1, u_height=1, homing=false, legends=["W"]) {
+module create_keycap(bottom=18, top=12.6, key_height=10, u_width=1, u_height=1, homing=false, font_size=3, legends=["W"]) {
     difference() {
         union() {
             difference() {
@@ -36,7 +36,7 @@ module create_keycap(bottom=18, top=12.6, key_height=10, u_width=1, u_height=1, 
                 create_stem();
             }
         }
-        create_legends(legends=legends, u_width=u_width, u_height=u_height, top=top, bottom=bottom);
+        create_legends(legends=legends, size=font_size, u_width=u_width, u_height=u_height, top=top, bottom=bottom);
     }
 }
 
@@ -50,7 +50,7 @@ module create_stem(stem_height=10) {
         }
 }
 
-module create_legends(legends=["w"], bottom=18, top=12.6, key_height=10, u_width=1, u_height=1) {
+module create_legends(legends=["w"], size=3, bottom=18, top=12.6, key_height=10, u_width=1, u_height=1) {
     for(i=[0:len(legends)-1]) {
         xpos = (bottom*u_width-(bottom-top))/2 - 1.5;
         ypos = (bottom*u_height-(bottom-top))/2 - 3.5;
@@ -58,11 +58,11 @@ module create_legends(legends=["w"], bottom=18, top=12.6, key_height=10, u_width
         if(i < 2) {
             translate([-xpos, ypos + (-ypos * 2 * i), key_height-1+.0001])
             linear_extrude(height=1)
-                better_text(string, size=2, halign="left", valign="center");
+                better_text(string, size=size, halign="left", valign="center");
         } else if(i < 4) {
             translate([xpos, ypos + (-ypos* 2 * (i-2)), key_height-1+.0001])
             linear_extrude(height=1)
-                better_text(string, size=4, halign="right", valign="center");
+                better_text(string, size=size, halign="right", valign="center");
         }
     }
 }
