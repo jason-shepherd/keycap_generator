@@ -1,4 +1,4 @@
-module create_keycap(bottom=18, top=12.6, key_height=10, u_width=1, u_height=1, legends=["W"]) {
+module create_keycap(bottom=18, top=12.6, key_height=10, u_width=1, u_height=1, homing=false, legends=["W"]) {
     difference() {
         union() {
             difference() {
@@ -14,6 +14,13 @@ module create_keycap(bottom=18, top=12.6, key_height=10, u_width=1, u_height=1, 
                 }
                 
             }
+
+            if(homing) {
+              translate([0, -top/2+1, key_height])
+              rotate([90, 0, 90])
+              cylinder(h=2.5, r=0.1, center=true);
+            }
+
             //create_legends(legends);
             create_stem(stem_height=10);
             if(u_width >= 2) {
@@ -104,6 +111,3 @@ function split_string(string, split_char, i=0) = (
         str(string[i] == split_char ? "\n" : string[i], split_string(string, split_char, i+1))
 );
 
-
-
-create_keycap(u_width=1.0, u_height=1.0, legends=["^","6",]);
