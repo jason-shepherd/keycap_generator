@@ -20,6 +20,7 @@ class KeycapGenerator:
         self.openscad_path = openscad_path
         self.keycap_path = keycap_path
         self.scad_keycap = None
+        # TODO try to make stl from string
         self.scad_file = None
 
     def generate_keycaps(self):
@@ -41,23 +42,27 @@ class KeycapGenerator:
         except FileNotFoundError:
             print("Invalid SCAD file path")
             return
-        #print(self.scad_keycap)
 
         # extracts useful key data
         for ir, keyboard_row in enumerate(keyboard_data):
             keyboard_row = iter(keyboard_row)
             for i, key in enumerate(keyboard_row):
-                width = 1.00
-                height = 1.00
+                width = 1
+                height = 1
+                homing = False
                 legends = key
 
                 if isinstance(key, dict):
-                    width, height = self.extract_metadata(key)
+                    width = key.get('w', 1)
+                    height = key.get('h', 1)
+                    homing = key.get('n', 1)
                     legends = next(keyboard_row)
+
                 if '\n' in legends:
                     legends = legends.splitlines()
+
                 print(legends, width, height)
-                self.create_scad_keycap(raw(legends), width, height)
+                self.create_scad_keycap(raw(legends), width, height, homing)
                 self.scad_to_stl(self.keycap_path, "{} {} keycap.stl".format(ir, i))
 
         #rewrite original file data
@@ -66,15 +71,11 @@ class KeycapGenerator:
         self.scad_file.write(self.scad_keycap)
         self.scad_file.close()
 
-    def extract_metadata(self, metadata):
-        "extracts metadata from dict file"
-
-        return metadata.get('w', 1.00), metadata.get('h', 1.00)
-
-    def create_scad_keycap(self, legends, width=1, height=1):
+    def create_scad_keycap(self, legends, width, height, homing):
         """Creates a keycap scad object from width and height"""
 
-        keycap_call = "\ncreate_keycap(u_width={}, u_height={}, legends=[".format(width, height)
+        keycap_call = """create_keycap(u_width={}, u_height={}, homing={},
+                       legends=[""".format(width, height, str(homing).lower())
 
         if isinstance(legends, list):
             for item in legends:
