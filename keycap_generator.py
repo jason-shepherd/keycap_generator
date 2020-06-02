@@ -95,12 +95,7 @@ class KeycapGenerator:
     def scad_to_stl(self, scad_path, output_path):
         """Use openscad command line to create stl file from scad file"""
 
-        openscad_process = subprocess.Popen([self.openscad_path, r'-o', output_path, scad_path],
-                                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                            shell=True)
-        stdout, stderr = openscad_process.communicate()
-        print(stdout, stderr)
-
+        openscad_process = subprocess.call([self.openscad_path, "-o", output_path, scad_path])
 
 def raw(text):
     """Returns a raw string representation of text"""
